@@ -1,0 +1,318 @@
+### API Tests for Movies CRUD Application
+### This file contains comprehensive automated tests for all endpoints
+
+#########################################
+# 1. GET REQUESTS - Retrieve Movies
+#########################################
+
+### Test 1.1: Get all movies (should return array)
+GET http://localhost:3000/movies
+Accept: application/json
+
+###
+
+### Test 1.2: Get movie by ID (existing - should return 200)
+GET http://localhost:3000/movies/1
+Accept: application/json
+
+###
+
+### Test 1.3: Get movie by ID (non-existent - should return 404)
+GET http://localhost:3000/movies/999
+Accept: application/json
+
+###
+
+#########################################
+# 2. QUERY PARAMETER FILTERING TESTS
+#########################################
+
+### Test 2.1: Filter by year
+GET http://localhost:3000/movies?year=2010
+Accept: application/json
+
+###
+
+### Test 2.2: Filter by director (case-insensitive)
+GET http://localhost:3000/movies?director=nolan
+Accept: application/json
+
+###
+
+### Test 2.3: Filter by title (partial match)
+GET http://localhost:3000/movies?title=matrix
+Accept: application/json
+
+###
+
+### Test 2.4: Combined filters (year + director)
+GET http://localhost:3000/movies?year=2010&director=Christopher Nolan
+Accept: application/json
+
+###
+
+### Test 2.5: Filter with no results
+GET http://localhost:3000/movies?year=1950
+Accept: application/json
+
+###
+
+#########################################
+# 3. POST REQUESTS - Create Movies
+#########################################
+
+### Test 3.1: Create valid movie (should return 201)
+POST http://localhost:3000/movies
+Content-Type: application/json
+
+{
+  "title": "The Shawshank Redemption",
+  "director": "Frank Darabont",
+  "year": 1994
+}
+
+###
+
+### Test 3.2: Create movie - missing required fields (should return 400)
+POST http://localhost:3000/movies
+Content-Type: application/json
+
+{
+  "title": "Incomplete Movie"
+}
+
+###
+
+### Test 3.3: Create movie - empty title (should return 400)
+POST http://localhost:3000/movies
+Content-Type: application/json
+
+{
+  "title": "",
+  "director": "Test Director",
+  "year": 2020
+}
+
+###
+
+### Test 3.4: Create movie - invalid year type (should return 400)
+POST http://localhost:3000/movies
+Content-Type: application/json
+
+{
+  "title": "Invalid Year Movie",
+  "director": "Test Director",
+  "year": "not-a-number"
+}
+
+###
+
+### Test 3.5: Create movie - year before 1888 (should return 400)
+POST http://localhost:3000/movies
+Content-Type: application/json
+
+{
+  "title": "Too Old Movie",
+  "director": "Ancient Director",
+  "year": 1800
+}
+
+###
+
+### Test 3.6: Create movie - year too far in future (should return 400)
+POST http://localhost:3000/movies
+Content-Type: application/json
+
+{
+  "title": "Future Movie",
+  "director": "Future Director",
+  "year": 2050
+}
+
+###
+
+### Test 3.7: Create valid movie with upcoming year (should return 201)
+POST http://localhost:3000/movies
+Content-Type: application/json
+
+{
+  "title": "Avatar 3",
+  "director": "James Cameron",
+  "year": 2027
+}
+
+###
+
+#########################################
+# 4. PUT REQUESTS - Update Movies
+#########################################
+
+### Test 4.1: Update movie - all fields (should return 200)
+PUT http://localhost:3000/movies/1
+Content-Type: application/json
+
+{
+  "title": "Inception (Director's Cut)",
+  "director": "Christopher Nolan",
+  "year": 2010
+}
+
+###
+
+### Test 4.2: Update movie - partial update (title only)
+PUT http://localhost:3000/movies/2
+Content-Type: application/json
+
+{
+  "title": "The Matrix Reloaded"
+}
+
+###
+
+### Test 4.3: Update movie - partial update (year only)
+PUT http://localhost:3000/movies/1
+Content-Type: application/json
+
+{
+  "year": 2011
+}
+
+###
+
+### Test 4.4: Update movie - non-existent ID (should return 404)
+PUT http://localhost:3000/movies/999
+Content-Type: application/json
+
+{
+  "title": "Does Not Exist",
+  "director": "Nobody",
+  "year": 2020
+}
+
+###
+
+### Test 4.5: Update movie - invalid year (should return 400)
+PUT http://localhost:3000/movies/1
+Content-Type: application/json
+
+{
+  "year": "invalid-year"
+}
+
+###
+
+### Test 4.6: Update movie - empty title (should return 400)
+PUT http://localhost:3000/movies/1
+Content-Type: application/json
+
+{
+  "title": ""
+}
+
+###
+
+### Test 4.7: Update movie - empty director (should return 400)
+PUT http://localhost:3000/movies/1
+Content-Type: application/json
+
+{
+  "director": "   "
+}
+
+###
+
+#########################################
+# 5. DELETE REQUESTS - Remove Movies
+#########################################
+
+### Test 5.1: Delete existing movie (should return 204)
+DELETE http://localhost:3000/movies/3
+Accept: application/json
+
+###
+
+### Test 5.2: Delete non-existent movie (should return 404)
+DELETE http://localhost:3000/movies/999
+Accept: application/json
+
+###
+
+#########################################
+# 6. ERROR HANDLING - Catch-All Routes
+#########################################
+
+### Test 6.1: Undefined GET route (should return 404)
+GET http://localhost:3000/undefined-route
+Accept: application/json
+
+###
+
+### Test 6.2: Undefined POST route (should return 404)
+POST http://localhost:3000/some/random/path
+Content-Type: application/json
+
+{
+  "data": "test"
+}
+
+###
+
+### Test 6.3: Unsupported HTTP method (should return 404)
+PATCH http://localhost:3000/movies/1
+Content-Type: application/json
+
+{
+  "title": "Test"
+}
+
+###
+
+#########################################
+# 7. EDGE CASES & BOUNDARY TESTS
+#########################################
+
+### Test 7.1: Create movie - year exactly 1888 (should return 201)
+POST http://localhost:3000/movies
+Content-Type: application/json
+
+{
+  "title": "The First Movie",
+  "director": "Louis Le Prince",
+  "year": 1888
+}
+
+###
+
+### Test 7.2: Create movie - current year + 5 (should return 201)
+POST http://localhost:3000/movies
+Content-Type: application/json
+
+{
+  "title": "Far Future Film",
+  "director": "Future Director",
+  "year": 2030
+}
+
+###
+
+### Test 7.3: Update movie - valid boundary year
+PUT http://localhost:3000/movies/1
+Content-Type: application/json
+
+{
+  "year": 1888
+}
+
+###
+
+### Test 7.4: Filter with URL encoded spaces
+GET http://localhost:3000/movies?director=Christopher%20Nolan
+Accept: application/json
+
+###
+
+### Test 7.5: Multiple filters - all parameters
+GET http://localhost:3000/movies?title=Inception&director=Nolan&year=2010
+Accept: application/json
+
+###

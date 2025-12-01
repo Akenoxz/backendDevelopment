@@ -4,4 +4,4 @@ const movies = [
   { id: 3, title: "Parasite", director: "Bong Joon-ho", year: 2019 },
 ];
 
-module.exports = { movies };
+export { movies };

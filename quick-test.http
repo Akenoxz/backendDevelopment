@@ -1,0 +1,76 @@
+### Quick Test Suite - Run these in sequence to see Morgan logs
+
+### 1. GET all movies
+GET http://localhost:3000/movies
+
+###
+
+### 2. CREATE a new movie
+POST http://localhost:3000/movies
+Content-Type: application/json
+
+{
+  "title": "Test Movie",
+  "director": "Test Director",
+  "year": 2024
+}
+
+###
+
+### 3. GET the new movie (use ID from previous response)
+GET http://localhost:3000/movies/4
+
+###
+
+### 4. UPDATE the movie
+PUT http://localhost:3000/movies/4
+Content-Type: application/json
+
+{
+  "title": "Updated Test Movie",
+  "year": 2025
+}
+
+###
+
+### 5. FILTER movies by year
+GET http://localhost:3000/movies?year=2025
+
+###
+
+### 6. DELETE the movie
+DELETE http://localhost:3000/movies/4
+
+###
+
+### 7. Verify deletion (should return 404)
+GET http://localhost:3000/movies/4
+
+###
+
+### 8. Test error - invalid year
+POST http://localhost:3000/movies
+Content-Type: application/json
+
+{
+  "title": "Bad Movie",
+  "director": "Bad Director",
+  "year": "invalid"
+}
+
+###
+
+### 9. Test error - missing fields
+POST http://localhost:3000/movies
+Content-Type: application/json
+
+{
+  "title": "Incomplete Movie"
+}
+
+###
+
+### 10. Test catch-all route
+GET http://localhost:3000/nonexistent-route
+
+###

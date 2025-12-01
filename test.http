@@ -1,7 +1,66 @@
+### Get all movies
 GET http://localhost:3000/movies
 
 ###
 
+### Filter movies by year
+GET http://localhost:3000/movies?year=2010
+
+###
+
+### Filter movies by director (partial match, case-insensitive)
+GET http://localhost:3000/movies?director=Nolan
+
+###
+
+### Filter movies by title (partial match, case-insensitive)
+GET http://localhost:3000/movies?title=matrix
+
+###
+
+### Filter movies by year and director (combined filters)
+GET http://localhost:3000/movies?year=2010&director=Christopher Nolan
+
+###
+
+### Filter movies by year and title (combined filters)
+GET http://localhost:3000/movies?year=1999&title=Matrix
+
+###
+
+### Filter movies by all three parameters
+GET http://localhost:3000/movies?year=2010&director=Nolan&title=Inception
+
+###
+
+### Filter with no matching results
+GET http://localhost:3000/movies?year=1950
+
+###
+
+### Get a specific movie by ID (existing movie)
+GET http://localhost:3000/movies/1
+
+###
+
+### Get a specific movie by ID (non-existent movie)
+GET http://localhost:3000/movies/999
+
+###
+
+### Create a new movie (valid)
+POST http://localhost:3000/movies
+Content-Type: application/json
+
+{
+  "title": "The Shawshank Redemption",
+  "director": "Frank Darabont",
+  "year": 1994
+}
+
+###
+
+### Create a new movie (valid - upcoming release)
 POST http://localhost:3000/movies
 Content-Type: application/json
 
@@ -10,12 +69,90 @@ Content-Type: application/json
   "director": "Scott Cawthon",
   "year": 2023
 }
-###
-
-GET http://localhost:3000/movies/1
 
 ###
 
+### Create a new movie (missing required fields - should fail)
+POST http://localhost:3000/movies
+Content-Type: application/json
+
+{
+  "title": "Incomplete Movie"
+}
+
+###
+
+### Create a new movie (empty strings - should fail)
+POST http://localhost:3000/movies
+Content-Type: application/json
+
+{
+  "title": "",
+  "director": "",
+  "year": 2020
+}
+
+###
+
+### Create a new movie (invalid year - not a number - should fail)
+POST http://localhost:3000/movies
+Content-Type: application/json
+
+{
+  "title": "Invalid Year Movie",
+  "director": "Test Director",
+  "year": "not-a-number"
+}
+
+###
+
+### Create a new movie (invalid year - before 1888 - should fail)
+POST http://localhost:3000/movies
+Content-Type: application/json
+
+{
+  "title": "Too Old Movie",
+  "director": "Ancient Director",
+  "year": 1800
+}
+
+###
+
+### Create a new movie (invalid year - too far in future - should fail)
+POST http://localhost:3000/movies
+Content-Type: application/json
+
+{
+  "title": "Future Movie",
+  "director": "Future Director",
+  "year": 2040
+}
+
+###
+
+### Update an existing movie (valid - update all fields)
+PUT http://localhost:3000/movies/1
+Content-Type: application/json
+
+{
+  "title": "Inception (Updated)",
+  "director": "Christopher Nolan (Updated)",
+  "year": 2011
+}
+
+###
+
+### Update an existing movie (valid - partial update)
+PUT http://localhost:3000/movies/2
+Content-Type: application/json
+
+{
+  "title": "The Matrix Reloaded"
+}
+
+###
+
+### Update an existing movie (valid - update year only)
 PUT http://localhost:3000/movies/1
 Content-Type: application/json
 
@@ -25,6 +162,59 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3000/movies/1
+### Update a movie (non-existent ID - should fail with 404)
+PUT http://localhost:3000/movies/999
+Content-Type: application/json
+
+{
+  "title": "Does Not Exist",
+  "director": "Nobody",
+  "year": 2020
+}
+
+###
+
+### Update a movie (invalid year - should fail with 400)
+PUT http://localhost:3000/movies/1
+Content-Type: application/json
+
+{
+  "year": "invalid"
+}
+
+###
+
+### Update a movie (empty title - should fail with 400)
+PUT http://localhost:3000/movies/1
+Content-Type: application/json
+
+{
+  "title": ""
+}
+
+###
+
+### Delete a movie (existing - should return 204)
+DELETE http://localhost:3000/movies/3
+
+###
+
+### Delete a movie (non-existent - should fail with 404)
+DELETE http://localhost:3000/movies/999
+
+###
+
+### Test catch-all route - undefined GET endpoint
+GET http://localhost:3000/undefined-route
+
+###
+
+### Test catch-all route - undefined POST endpoint
+POST http://localhost:3000/some/random/path
+
+###
+
+### Test catch-all route - wrong method on movies
+PATCH http://localhost:3000/movies/1
 
 ###
